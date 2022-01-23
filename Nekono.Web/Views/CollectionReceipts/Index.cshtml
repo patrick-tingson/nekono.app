@@ -1,0 +1,398 @@
+﻿@model Nekono.AA.Domain.Model.DeleteRequest
+
+@{
+    ViewData["Title"] = "Collection Receipts";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">account_balance</i>
+                        </div>
+                        <h4 class="card-title">Collection Receipts</h4>
+                        <button class="btn btn-success float-right" id="exportExcelLink">
+                            <i class="material-icons">cloud_download</i> Download as Excel
+                        </button>
+                        <button class="btn btn-success float-right" onclick="window.alert('NOT YET AVAILABLE.')">
+                            <i class="material-icons">playlist_add</i> Add Batch Collection Receipts
+                        </button>
+                        <button class="btn btn-success float-right" onclick="window.alert('NOT YET AVAILABLE.')">
+                            <i class="material-icons">add</i> Add Collection Receipt
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                        </div>
+                        <div class="material-datatables">
+                            <table id="listTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Collection Receipt No.</th>
+                                        <th class="text-center">Type</th>
+                                        <th>Date</th>
+                                        <th class="text-right">Total Amount</th>
+                                        <th>Created By</th>
+                                        <th>Branch Code</th>
+                                        <th>Payment</th>
+                                        <th>Ref. No.</th>
+                                        <th>Bank</th>
+                                        <th hidden>Last Update Date</th>
+                                        <th hidden>Last Update By</th>
+                                        <th>Remarks</th>
+                                        <th class="disabled-sorting text-right not-export">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Collection Receipt No.</th>
+                                        <th class="text-center">Type</th>
+                                        <th>Date</th>
+                                        <th class="text-right">Total Amount</th>
+                                        <th>Created By</th>
+                                        <th>Branch Code</th>
+                                        <th>Payment</th>
+                                        <th>Ref. No.</th>
+                                        <th>Bank</th>
+                                        <th hidden>Last Update Date</th>
+                                        <th hidden>Last Update By</th>
+                                        <th>Remarks</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+
+@*//############################  MORE INFO MODAL DIAGLOG #######################################*@
+<div class="modal fade" id="MoreInfo" role="dialog" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="titleMoreInfo"></h3>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Transaction Date</label>
+                            <input type="text" class="form-control" id="viewTranDate" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Created By</label>
+                            <input type="text" class="form-control" id="viewCreatedBy" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Branch Code</label>
+                            <input type="text" class="form-control" id="viewBranchCode" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Payment Method</label>
+                            <input type="text" class="form-control" id="viewPaymentMethod" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Referrence No.</label>
+                            <input type="text" class="form-control" id="viewRefNo" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Bank</label>
+                            <input type="text" class="form-control" id="viewBank" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Last Updated Date</label>
+                            <input type="text" class="form-control" id="viewLastUpdatedDate" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Last Updated By</label>
+                            <input type="text" class="form-control" id="viewLastUpdatedBy" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Remarks</label>
+                            <input type="text" class="form-control" id="viewRemarks" readonly />
+                        </div>
+                    </div>
+                </div>
+                <table id="moreInfoTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Inventory No.</th>
+                            <th>Item No.</th>
+                            <th>Item Name</th>
+                            <th>Type</th>
+                            <th class="text-right">Qty</th>
+                            <th class="text-right">Amount</th>
+                            <th class="text-right">Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Inventory No.</th>
+                            <th>Item No.</th>
+                            <th>Item Name</th>
+                            <th>Type</th>
+                            <th class="text-right">Qty</th>
+                            <th class="text-right">Amount</th>
+                            <th class="text-right">Total Amount</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="text-right" id="viewTotalAmount"></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger float-right" id="btnVoidReceipt" style="margin-right:5px;" onclick="window.alert('NOT YET AVAILABLE.');">
+                    Void Receipt
+                </button>
+                <button type="button" class="btn btn-default float-right" style="margin-right:5px;" data-dismiss="modal" aria-hidden="true">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (ViewData["Message"] != null)
+{
+    if (ViewData["Message"].ToString() == "SUCCESS")
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                swal({
+                    title: "Good job!",
+                    text: "Collection receipt has been saved!",
+                    type: "success",
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-success"
+                });
+            };
+        </script>
+    }
+    else
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                swal({ title: "Oh no!", text: "@ViewData["Message"]", type: "error", buttonsStyling: false, confirmButtonClass: "btn btn-info" });
+            };
+        </script>
+    }
+}
+
+<script src="../js/core/jquery.min.js"></script>
+<script src="../js/plugins/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#listTable').DataTable({
+            ajax: {
+                url: "@Url.Action("GetAll", "CollectionReceipts")",
+                dataSrc: '',
+                "error": function (xhr, error, thrown) {
+                    if (xhr.status == 401) {
+                        window.location = "@Url.Action("Index","Login")";
+                    }
+                }
+            },
+            columns: [
+                { data: "collectionReceiptNo" },
+                {
+                    data: null, render: function (data, type, row) {
+                        switch (data.active) {
+                            case 0:
+                                return '<span class="badge badge-pill badge-success">SALE</span>';
+                            case 1:
+                                return '<span class="badge badge-pill badge-danger">VOID</span>';
+                        }
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row) {
+                        return data.tranDate + ' ' + data.tranTime;
+                    }
+                },
+                { data: "totalAmount", render: $.fn.dataTable.render.number(',', '.', 2, "PHP ") },
+                { data: "createdBy" },
+                { data: "branchCode" },
+                { data: "type" },
+                { data: "refNo" },
+                { data: "bank" },
+                {
+                    data: null, render: function (data, type, row) {
+                        return data.lastUpdatedDate + ' ' + data.lastUpdatedTime;
+                    }
+                },
+                { data: "lastUpdatedBy" },
+                { data: "remarks" },
+                {
+                    data: null, render: function (data, type, row) {
+                        var infoButton = '<a href="#" class="btn btn-info btn-round btn-fab view" title="More Details"' +
+                            ' data-id="' + data.collectionReceiptNo + '" data-active="' + data.active + '" data-date="' + data.tranDate + '" data-time="' + data.tranTime +
+                            '" data-totalamount="' + data.totalAmount.toFixed(2) + '" data-createdby="' + data.createdBy + '" data-branchcode="' + data.branchCode +
+                            '" data-type="' + data.type + '" data-refno="' + data.refNo + '" data-bank="' + data.bank +
+                            '" data-lastupdatedate="' + data.lastUpdatedDate + '" data-lastupdatetime="' + data.lastUpdatedTime + '" data-lastupdateby="' + data.lastUpdatedBy + '" data-remarks="' + data.remarks + '"><i class="material-icons">info</i></a>';
+                        
+                        return infoButton;
+                    }
+                }
+            ],
+            columnDefs: [
+                {
+                    targets: [1],
+                    className: 'text-center'
+                },
+                {
+                    targets: [3],
+                    className: 'text-right'
+                },
+                {
+                    targets: -1,
+                    className: 'td-action text-right'
+                },
+                {
+                    targets: [9, 10],
+                    'createdCell': function (td, cellData, rowData, row, col) {
+                        $(td).attr('hidden', '');
+                    }
+                }
+            ],
+            "order": [[0, "desc"]],
+            pagingType: "full_numbers",
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records",
+            },
+            buttons: [
+                {
+                    extend: "excelHtml5",
+                    text: "DOWNLOAD AS EXCEL",
+                    className: 'd-none',
+                    filename: 'Collection Receipt - ' + '@DateTime.Now.ToShortDateString()',
+                    title: 'Collection Receipt - ' + '@DateTime.Now',
+                    exportOptions: {
+                        columns: 'th:not(.not-export)',
+                        modifier: {
+                            page: 'all'
+                        }
+                    }
+                }],
+            dom: "B<'row'<'col-sm-5'l><'col-sm-7'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            initComplete: function () {
+                var $buttons = $('.dt-buttons').hide();
+                $('#exportExcelLink').on('click', function () {
+                    var btnClass = '.buttons-excel'
+                    if (btnClass) $buttons.find(btnClass).click();
+                })
+            }
+        }).columns.adjust().responsive.recalc();;
+
+        var moreInfoTable = $('#moreInfoTable').DataTable({
+            ajax: {
+                url: "@Url.Action("GetItems", "CollectionReceipts")?collectionReceipt=0",
+                dataSrc: '',
+                "error": function (xhr, error, thrown) {
+                    if (xhr.status == 401) {
+                        window.location = "@Url.Action("Index","Login")";
+                    }
+                }
+            },
+            columns: [
+                { data: "inventoryNo" },
+                { data: "itemNo" },
+                { data: "itemName" },
+                { data: "type" },
+                { data: "qty" },
+                { data: "amountPerQty", render: $.fn.dataTable.render.number(',', '.', 2, "PHP ") },
+                { data: "totalAmount", render: $.fn.dataTable.render.number(',', '.', 2, "PHP ") },
+            ],
+            columnDefs: [
+                {
+                    targets: [6, 4, 5],
+                    className: 'text-right'
+                }
+            ],
+            "order": [[0, "desc"]],
+            "pagingType": "full_numbers",
+            lengthChange: false,
+            searching: false,
+            responsive: true,
+        }).columns.adjust().responsive.recalc();
+
+        $('#listTable tbody').on('click', 'a.view', function () {
+
+            var status = '<span class="badge badge-pill badge-success align-middle">SALE</span>';
+            var url = "@Url.Action("GetItems","CollectionReceipts")?collectionReceipt=" + $(this).data('id');
+            moreInfoTable.ajax.url(url).load();
+
+
+            if ($(this).data('active').toString() == '1') {
+                status = '<span class="badge badge-pill badge-danger align-middle">VOID</span>';
+                document.getElementById('btnVoidReceipt').style.display = "none";
+            } else {
+                document.getElementById('btnVoidReceipt').style.display = "block";
+            }
+
+            document.getElementById('titleMoreInfo').innerHTML = "Collection Receipt: " + $(this).data('id') + ' ' + status;
+            document.getElementById('viewTotalAmount').innerHTML = 'TOTAL AMOUNT : PHP ' + formatMoney($(this).data('totalamount'));
+
+            var lastTranDate = $(this).data('lastupdatedate') ?? ' ';
+            var lastTranTime = $(this).data('lastupdatetime') ?? ' ';
+
+            $("#viewTranDate").val($(this).data('date') + ' ' + $(this).data('time')).trigger("change");
+            $("#viewCreatedBy").val($(this).data('createdby') == "" ? ' ' : $(this).data('createdby') ?? ' ').trigger("change");
+            $("#viewBranchCode").val($(this).data('branchcode') == "" ? ' ' : $(this).data('branchcode') ?? ' ').trigger("change");
+            $("#viewLastUpdatedDate").val(lastTranDate + ' ' + lastTranTime).trigger("change");
+            $("#viewLastUpdatedBy").val($(this).data('lastupdateby') == "" ? ' ' : $(this).data('lastupdateby') ?? ' ').trigger("change");
+            $("#viewRemarks").val($(this).data('remarks') == "" ? ' ' : $(this).data('remarks') ?? ' ').trigger("change");
+            $("#viewRefNo").val($(this).data('refno') == "" ? ' ' : $(this).data('refno') ?? ' ').trigger("change");
+            $("#viewPaymentMethod").val($(this).data('type') == "" ? ' ' : $(this).data('type') ?? ' ').trigger("change");
+            $("#viewBank").val($(this).data('bank') == "" ? ' ' : $(this).data('bank') ?? ' ').trigger("change");
+
+            $('#MoreInfo').modal('show');
+        });
+    });
+</script>

@@ -1,0 +1,257 @@
+﻿@model ItemsMultipleModel
+
+@{
+    ViewData["Title"] = "Print Items Label";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">store</i>
+                        </div>
+                        <h4 class="card-title">Items Inventory</h4>
+                        <button class="btn btn-success float-right">
+                            <i class="material-icons">refresh</i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <div class="material-datatables">
+                            <table id="listTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Item No.</th>
+                                        <th>Name</th>
+                                        <th>Vendor Code</th>
+                                        <th class="disabled-sorting text-right not-export">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Item No.</th>
+                                        <th>Name</th>
+                                        <th>Vendor Code</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">print</i>
+                        </div>
+                        <h4 class="card-title">Items To Print Label</h4>
+                        <button class="btn btn-success float-right" id="clearItemsToPrint">
+                            <i class="material-icons">delete</i> Clear All
+                        </button>
+                        <button class="btn btn-success float-right" id="exportExcelLink">
+                            <i class="material-icons">cloud_download</i> Download as Excel
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <div class="material-datatables">
+                            <table id="listTableToPrint" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Item No.</th>
+                                        <th>Name</th>
+                                        <th>SRP</th>
+                                        <th class="disabled-sorting text-right not-export">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Item No.</th>
+                                        <th>Name</th>
+                                        <th>SRP</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*//############################  ADD STOCK MODAL DIAGLOG #######################################*@
+<div class="modal fade" id="AddStocks" role="dialog" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form class="form" method="post" action="">
+                @Html.AntiForgeryToken()
+                @*@Html.HiddenFor(model => model.InventoryDetails.ItemNo, new { id = "addStocksItemNo" })*@
+                <div class="modal-header">
+                    <h3 class="modal-title" id="titleAddStocks"></h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">close</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <label class="col-sm-2 col-form-label">Qty</label>
+                                <div class="col-sm-10">
+                                    <div class="form-group">
+                                        @*@Html.TextBoxFor(model => model.InventoryDetails.Qty, new { @class = "form-control", @maxlength = "10", type = "number", number = "true", step = "0", required = "true", min = 1 })*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" id="button" value="Save Stocks" class="btn btn-success float-right" />
+                    <button type="button" class="btn btn-default float-right" style="margin-right:5px;" data-dismiss="modal" aria-hidden="true">
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="../js/core/jquery.min.js"></script>
+<script src="../js/plugins/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var listTable = $('#listTable').DataTable({
+            ajax: {
+                url: '../Items/GetAll',
+                dataSrc: '',
+                "error": function (xhr, error, thrown) {
+                    if (xhr.status == 401) {
+                        window.location = "@Url.Action("Index","Login")";
+                    }
+                    else {
+                        window.alert = xhr.status + ' - ' + xhr.statusMessage;
+                    }
+                }
+                @*"statusCode": {
+                    401: function (xhr, error, thrown) {
+                        console.log(error + ' T:' + thrown + ' xhr ' + xhr.status + ' ' + xhr.statusMessage);
+                        window.location = "@Url.Action("Index","Login")";
+                    }
+                }*@
+            },
+            columns: [
+                { data: "itemNo" },
+                { data: "itemName" },
+                { data: "vendorCode" },
+                {
+                    data: null, render: function (data, type, row) {
+                        var addButton = '<a href="#" class="btn btn-success btn-round btn-fab add" title="Add Item"' +
+                            ' data-itemno="' + data.itemNo + '" data-itemname="' + data.itemName + '"' +
+                            ' data-srp="PHP ' + formatMoney(data.finalRetailPrice)  + '"> <i class="material-icons">add</i></a> ';
+
+                        return addButton;
+                    }
+                }
+            ],
+            columnDefs: [
+                {
+                    targets: -1,
+                    className: 'td-action text-right'
+                }
+            ],
+            "order": [[0, "desc"]],
+            pagingType: "full_numbers",
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records",
+            }
+        }).columns.adjust().responsive.recalc();
+
+        var listTableToPrint = $('#listTableToPrint').DataTable({
+            columnDefs: [
+                {
+                    targets: -1,
+                    className: 'td-action text-right'
+                }
+            ],
+            "order": [[0, "desc"]],
+            pagingType: "full_numbers",
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records",
+            },
+            buttons: [
+                {
+                    extend: "excelHtml5",
+                    text: "DOWNLOAD AS EXCEL",
+                    className: 'd-none',
+                    filename: 'Print Items Label - ' + '@DateTime.Now',
+                    title: '',
+                    exportOptions: {
+                        columns: 'th:not(.not-export)',
+                        modifier: {
+                            page: 'all'
+                        }
+                    }
+                }],
+            dom: "B<'row'<'col-sm-5'l><'col-sm-7'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            initComplete: function () {
+                var $buttons = $('.dt-buttons').hide();
+                $('#exportExcelLink').on('click', function () {
+                    var btnClass = '.buttons-excel'
+                    if (btnClass) $buttons.find(btnClass).click();
+                })
+            }
+        }).columns.adjust().responsive.recalc();
+
+        $('#listTable tbody').on('click', 'a.add', function () {
+            listTableToPrint
+                .row.add([$(this).data('itemno'),
+                    $(this).data('itemname'),
+                    $(this).data('srp'),
+                    '<a href="#" class="btn btn-danger btn-round btn-fab delete" title="Delete Item"><i class="material-icons">delete</i></a> '])
+                .draw();
+        });
+
+        $('#listTableToPrint tbody').on('click', 'a.delete', function () {
+            listTableToPrint
+                .row($(this).parents('tr'))
+                .remove()
+                .draw();
+        });
+
+        $('#clearItemsToPrint').click(function () {
+            listTableToPrint.clear().draw();
+        });
+    });
+</script>

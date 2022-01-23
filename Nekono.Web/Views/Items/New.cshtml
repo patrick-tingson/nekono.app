@@ -1,0 +1,205 @@
+﻿@model Nekono.AA.Domain.Model.ItemDetails
+
+@{
+    ViewData["Title"] = "Items Inventory";
+
+    var supplier = new List<SelectListItem>()
+    {
+        new SelectListItem() { Text = "EVO", Value = "EVO" },
+        new SelectListItem() { Text = "KYT", Value = "KYT" },
+        new SelectListItem() { Text = "RCB", Value = "RCB" },
+        new SelectListItem() { Text = "BENDIX", Value = "BENDIX" },
+        new SelectListItem() { Text = "BREMBO", Value = "BREMBO" },
+        new SelectListItem() { Text = "CNC", Value = "CNC" },
+        new SelectListItem() { Text = "DOMINO", Value = "DOMINO" },
+        new SelectListItem() { Text = "GENERIC", Value = "GENERIC" },
+        new SelectListItem() { Text = "GPR", Value = "GPR" },
+        new SelectListItem() { Text = "GRS", Value = "GRS" },
+        new SelectListItem() { Text = "HENG", Value = "HENG" },
+        new SelectListItem() { Text = "JQB", Value = "JQB" },
+        new SelectListItem() { Text = "JVT", Value = "JVT" },
+        new SelectListItem() { Text = "KIXX", Value = "KIXX" },
+        new SelectListItem() { Text = "KLEEN", Value = "KLEEN" },
+        new SelectListItem() { Text = "LAMBORG9", Value = "LAMBORG9" },
+        new SelectListItem() { Text = "MOTOWOLF", Value = "MOTOWOLF" },
+        new SelectListItem() { Text = "MOTUL", Value = "MOTUL" },
+        new SelectListItem() { Text = "MUTARRU", Value = "MUTARRU" },
+        new SelectListItem() { Text = "NATHONG", Value = "NATHONG" },
+        new SelectListItem() { Text = "PIAA", Value = "PIAA" },
+        new SelectListItem() { Text = "PLAYLITE", Value = "PLAYLITE" },
+        new SelectListItem() { Text = "R. MONKEY", Value = "R. MONKEY" },
+        new SelectListItem() { Text = "SEALTITE", Value = "SEALTITE" },
+        new SelectListItem() { Text = "SHAD", Value = "SHAD" },
+        new SelectListItem() { Text = "SOMJIN", Value = "SOMJIN" },
+        new SelectListItem() { Text = "SPECV", Value = "SPECV" },
+        new SelectListItem() { Text = "SPYKER", Value = "SPYKER" },
+        new SelectListItem() { Text = "TTGR", Value = "TTGR" },
+        new SelectListItem() { Text = "UMA", Value = "UMA" },
+        new SelectListItem() { Text = "VEE RUBBER", Value = "VEE RUBBER" },
+        new SelectListItem() { Text = "YAMAHA", Value = "YAMAHA" },
+        new SelectListItem() { Text = "YSS", Value = "YSS" }
+    };
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <form class="form" method="post" action="">
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-7 mr-auto ml-auto">
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-warning">
+                            <div class="card-icon">
+                                <i class="material-icons">settings_system_daydream</i>
+                            </div>
+                            <h4 class="card-title">
+                                New Item -
+                                <small class="category">Please filled the required fields.</small>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <br />
+                            <div class="col-md-12">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Name</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.ItemName, new { @class = "form-control", required = "true", @maxlength = "32" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Description</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.ItemDesc, new { @class = "form-control", required = "true", @maxlength = "200" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Group</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.ItemGroup, new { @class = "form-control", required = "true", @maxlength = "50" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Group Description</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.ItemGroupDesc, new { @class = "form-control", @maxlength = "200" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Supplier</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.DropDownListFor(model => model.VendorCode, supplier,
+                                                                            new { @class = "selectpicker", @data_style = "select-with-transition", @data_size = "7", title = "Supplier", tabindex = "-98", required = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Specification</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.Specification, new { id = "updateSpecification", @class = "form-control", @maxlength = "1000" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Unit Price</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.UnitPrice, new { @class = "form-control", @maxlength = "10", type = "number", number = "true", step = ".01", required = "true", min = 0.01 })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Retail Price</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.RetailPrice, new { @class = "form-control", @maxlength = "10", type = "number", number = "true", step = ".01", required = "true", min = 0.01 })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Wholesale Price</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.WholesalePrice, new { @class = "form-control", @maxlength = "10", type = "number", number = "true", step = ".01", required = "true", min = 0.01 })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Wholesale Min. Qty</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.WholesaleMinQty, new { @class = "form-control", @maxlength = "10", type = "number", number = "true", step = "0", required = "true", min = 0 })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Retail Disc. (0.01 = 1%)</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.RetailDiscount, new { @class = "form-control", @maxlength = "10", type = "number", number = "true", step = ".0001", required = "true", min = 0, max = 1 })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-4 col-form-label">Wholesale Disc. (0.01 = 1%)</label>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        @Html.TextBoxFor(model => model.WholesaleDiscount, new { @class = "form-control", @maxlength = "10", type = "number", number = "true", step = ".0001", required = "true", min = 0, max = 1 })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="submit" id="button" value="Save Item" class="btn btn-success float-right" />
+                                    <input type="button" value="Back" class="btn btn-default float-right" onclick="window.location='@Url.Action("Index", "Items")'" />
+                                    <br />
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (ViewData["Message"] != null)
+{
+    if (ViewData["Message"].ToString() == "SUCCESS")
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                swal({
+                    title: "Good job!",
+                    text: "Item details has been saved!",
+                    type: "success",
+                    buttonsStyling: false,
+                    confirmButtonClass: "btn btn-success"
+                });
+            };
+        </script>
+    }
+    else
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                swal({ title: "Oh no!", text: "@ViewData["Message"]", type: "error", buttonsStyling: false, confirmButtonClass: "btn btn-info" });
+            };
+        </script>
+    }
+}

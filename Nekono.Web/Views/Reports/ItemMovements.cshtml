@@ -1,0 +1,191 @@
+﻿@model Nekono.AA.Domain.Model.DeleteRequest
+
+@{
+    ViewData["Title"] = $"Item Movements";
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">account_balance</i>
+                        </div>
+                        <h4 class="card-title">Item Sales For @DateTime.Now.Subtract(new TimeSpan(7, 0, 0, 0, 0)).ToLongDateString() To @DateTime.Now.ToLongDateString()</h4>
+                        <button class="btn btn-success float-right" id="exportExcelLink">
+                            <i class="material-icons">cloud_download</i> Download as Excel
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                        </div>
+                        <div class="material-datatables">
+                            <table id="listTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Inventory No.</th>
+                                        <th class="text-center">Type</th>
+                                        <th>Date</th>
+                                        <th>Item No.</th>
+                                        <th>Name</th>
+                                        <th hidden>Description</th>
+                                        <th hidden>Vendor Code</th>
+                                        <th>Vendor</th>
+                                        <th>Branch Code</th>
+                                        <th>Created By</th>
+                                        <th class="text-center">Status</th>
+                                        <th>Remarks</th>
+                                        <th class="text-right">Qty</th>
+                                        <th hidden>Last Updated Date</th>
+                                        <th hidden>Last Updated By</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Inventory No.</th>
+                                        <th class="text-center">Type</th>
+                                        <th>Date</th>
+                                        <th>Item No.</th>
+                                        <th>Name</th>
+                                        <th hidden>Description</th>
+                                        <th hidden>Vendor Code</th>
+                                        <th>Vendor</th>
+                                        <th>Branch Code</th>
+                                        <th>Created By</th>
+                                        <th class="text-center">Status</th>
+                                        <th>Remarks</th>
+                                        <th class="text-right">Qty</th>
+                                        <th hidden>Last Updated Date</th>
+                                        <th hidden>Last Updated By</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+
+<script src="../js/core/jquery.min.js"></script>
+<script src="../js/plugins/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#listTable').DataTable({
+            ajax: {
+                url: "@Url.Action("ItemMovementsByDate", "Reports")",
+                dataSrc: '',
+                "error": function (xhr, error, thrown) {
+                    if (xhr.status == 401) {
+                        window.location = "@Url.Action("Index","Login")";
+                    }
+                }
+            },
+            columns: [
+                { data: "inventoryNo" },
+                {
+                    data: null, render: function (data, type, row) {
+                        if (data.type != null && (data.type == "RSAL" || data.type == "WSAL")) {
+                            return '<span class="badge badge-pill badge-success">' + data.type + '</span>';
+                        }
+                        else if (data.type != null && data.type == "REST") {
+                            return '<span class="badge badge-pill badge-info">' + data.type + '</span>';
+                        }
+                        else {
+                            return '<span class="badge badge-pill badge-danger">' + data.type + '</span>';
+                        }
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row) {
+                        return data.tranDate + ' ' + data.tranTime;
+                    }
+                },
+                { data: "itemNo" },
+                { data: "itemName" },
+                { data: "itemDesc" },
+                { data: "vendorCode" },
+                { data: "vendorName" },
+                { data: "branchCode" },
+                { data: "createdBy" },
+                {
+                    data: null, render: function (data, type, row) {
+                        switch (data.active) {
+                            case 0:
+                                return '<span class="badge badge-pill badge-success">ACTIVE</span>';
+                            case 1:
+                                return '<span class="badge badge-pill badge-danger">DELETED</span>';
+                        }
+                    }
+                },
+                { data: "remarks" },
+                { data: "qty" },
+                {
+                    data: null, render: function (data, type, row) {
+                        return data.lastUpdatedDate + ' ' + data.lastUpdatedTime;
+                    }
+                },
+                { data: "lastUpdatedBy" }
+            ],
+            columnDefs: [
+                {
+                    targets: [1, 9],
+                    className: 'text-center'
+                },
+                {
+                    targets: [12],
+                    className: 'text-right'
+                },
+                {
+                    targets: [5,6, 13, 14],
+                    'createdCell': function (td, cellData, rowData, row, col) {
+                        $(td).attr('hidden', '');
+                    }
+                }
+            ],
+            "order": [[0, "desc"]],
+            pagingType: "full_numbers",
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records",
+            },
+            buttons: [
+                {
+                    extend: "excelHtml5",
+                    text: "DOWNLOAD AS EXCEL",
+                    className: 'd-none',
+                    filename: 'Item Movement For - @DateTime.Now.Subtract(new TimeSpan(7, 0, 0, 0, 0)).ToLongDateString() To @DateTime.Now.ToLongDateString()',
+                    title: 'Item Movement For - @DateTime.Now.Subtract(new TimeSpan(7, 0, 0, 0, 0)).ToLongDateString() To @DateTime.Now.ToLongDateString()',
+                    exportOptions: {
+                        columns: 'th:not(.not-export)',
+                        modifier: {
+                            page: 'all'
+                        }
+                    }
+                }],
+            dom: "B<'row'<'col-sm-5'l><'col-sm-7'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            initComplete: function () {
+                var $buttons = $('.dt-buttons').hide();
+                $('#exportExcelLink').on('click', function () {
+                    var btnClass = '.buttons-excel'
+                    if (btnClass) $buttons.find(btnClass).click();
+                })
+            }
+        }).columns.adjust().responsive.recalc();
+    });
+</script>

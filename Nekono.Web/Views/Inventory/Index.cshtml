@@ -1,0 +1,8 @@
+﻿@{
+    ViewData["Title"] = "Inventory";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    @User.FindFirst(claim=>claim.Type==System.Security.Claims.ClaimTypes.UserData)?.Value
+</div>
